@@ -51,7 +51,7 @@ mod int_tests {
         String::from_utf8_lossy(writes.recv().await?.as_slice()),
         @r###""250 testik greets macca\r\n""###);
         insta::assert_debug_snapshot!(
-        Regex::new("[0-9]{9}[0-9]*")?.replace(
+        Regex::new("[0-9]{4}[0-9]*")?.replace(
         String::from_utf8_lossy(writes.recv().await?.as_slice()).to_string().as_str(),"--redacted--"),
         @r###""250 Ok! Transaction --redacted--@testik started.\r\n""###);
         insta::assert_debug_snapshot!(

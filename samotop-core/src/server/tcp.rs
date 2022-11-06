@@ -128,7 +128,7 @@ impl<'a> TcpServer<'a> {
             };
             let service = service.clone();
             spawn_task_and_swallow_log_errors(
-                format!("TCP transmission {}", conn),
+                format!("TCP connection {}", conn.id),
                 service.handle(stream, conn),
             );
         }

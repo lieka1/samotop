@@ -130,7 +130,7 @@ impl<'a> UnixServer<'a> {
             };
             let service = service.clone();
             spawn_task_and_swallow_log_errors(
-                format!("TCP transmission {}", conn),
+                format!("Unix connection {}", conn.id),
                 service.handle(stream, conn),
             );
         }
