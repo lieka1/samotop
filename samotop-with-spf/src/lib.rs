@@ -7,10 +7,10 @@ use self::lookup::*;
 use samotop_core::{
     common::*,
     mail::{AcceptsDispatch, DispatchError, DispatchResult, MailDispatch, MailSetup},
-    smtp::{SmtpPath, SmtpSession},
+    smtp::{SmtpPath, SmtpSession, SmtpHost},
 };
-pub use viaspf::Config;
 use viaspf::{evaluate_sender, SpfResult};
+pub use viaspf::{Config, DomainName, Sender};
 
 /// enables checking for SPF records
 #[derive(Clone, Debug)]
@@ -55,10 +55,27 @@ impl MailDispatch for SpfWithConfig {
             Ok(ip) => ip,
         };
         let peer_name = session.peer_name.clone().unwrap_or_default();
-        let sender = match session.transaction.mail.as_ref().map(|m| m.sender()) {
-            None | Some(SmtpPath::Null) | Some(SmtpPath::Postmaster) => String::new(),
-            Some(SmtpPath::Mailbox { host, .. }) => host.domain(),
+        let sender = {
+            let s = match session.transaction.mail.as_ref().map(|m| m.sender()) {
+                None | Some(SmtpPath::Null) | Some(SmtpPath::Postmaster) => None,
+                Some(SmtpPath::Mailbox { host, .. }) => {
+                    match host {
+                        SmtpHost::Domain(domain_name) => {
+                            Some(Sender::from_domain(domain_name).unwrap())
+                        }
+                        _ => {
+                            None
+                        }
+                    }
+                }
+            };
+            if let Some(sed) = s {
+                sed
+            } else {
+                return Box::pin(async move { Err(DispatchError::Temporary) });
+            }
         };
+
         let fut = async move {
             // TODO: improve privacy - a) encrypt DNS, b) do DNS servers need to know who is receiving mail from whom?
             let resolver = match new_resolver().await {
@@ -72,10 +89,7 @@ impl MailDispatch for SpfWithConfig {
                 &resolver,
                 &self.config,
                 peer_addr,
-                &sender.parse().map_err(|e| {
-                    error!("Could not parse sender {:?}, {}", sender, e);
-                    DispatchError::Temporary
-                })?,
+                &sender,
                 Some(&peer_name.parse().map_err(|e| {
                     error!("Could not parse peer domain {:?}, {}", peer_name, e);
                     DispatchError::Temporary

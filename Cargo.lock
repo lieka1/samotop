@@ -1870,9 +1870,9 @@ checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
 
 [[package]]
 name = "viaspf"
-version = "0.4.0-alpha.3"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6ab69a2b80d246c4a99be844ac0ec0efa4dab0ed6307617b78ae5140545c3013"
+checksum = "d1ad5f27980197fddd188658abc517fd0bf54a2736421abb5f9c7a0a62624c48"
 dependencies = [
  "async-trait",
  "idna",
@@ -1882,9 +1882,9 @@ dependencies = [
 
 [[package]]
 name = "viaspf-record"
-version = "0.4.0-alpha.3"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1893bd78e0e95fd75e7e94b97280cd1487a20a46a6bc7de0bc60b3e679c0cdf6"
+checksum = "9a26a42057c64dfa1278cb3b9753a72e895e7ad8b109787bcee56223ece8202d"
 
 [[package]]
 name = "waker-fn"

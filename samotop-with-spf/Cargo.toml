@@ -24,8 +24,7 @@ path = "../samotop-core"
 [dependencies]
 pin-project = "1.0"
 log = "0.4"
-# TODO: use released async version https://gitlab.com/glts/viaspf/-/issues/2
-viaspf = { version = "0.4.0-alpha.3"}
+viaspf = { version = "0.4.1", features = [] }
 trust-dns-resolver = { version = "0.20", default-features = false }
 async-std-resolver = "0.20"
 async-std = "1.9"

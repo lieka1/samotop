@@ -62,15 +62,15 @@ impl SessionService for PrudentService {
     {
         Box::pin(async move {
             if let Some(delay) = self.config.wait_for_banner_delay {
-                let mut buf = [0u8];
+                let mut buf = [0u8; 425];
                 use async_std::io::ReadExt;
                 match io.read(&mut buf[..]).timeout(delay).await {
                     Some(Ok(0)) => {
                         // this just looks like the client gave up and left
                         warn!("{} touch and go!", state.session.connection.peer_addr)
                     }
-                    Some(Ok(_)) => {
-                        state.session.input.push(buf[0]);
+                    Some(Ok(len)) => {
+                        state.session.input.extend_from_slice(&buf[0..len]);
                         state.session.say_shutdown_processing_err(
                             "Client sent commands before banner".into(),
                         );
