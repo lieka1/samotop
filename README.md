@@ -3,6 +3,8 @@
 [samotop]: SaMoToP.svg
 
 # Samotop
+Clone from [original](https://gitlab.com/BrightOpen/Samotop)
+
 An SMTP [server](samotop-server/README.md) and [library](samotop/README.md) implemented in Rust.
 
 
